@@ -35,9 +35,3 @@ info.addEventListener('click', function(event) {
 
 
 });
-
-let str = "Hello";
-str.something = 5;
-console.log(str.something); // ?
-console.log(str); // ?
-var str = "Hello";console.log(null == undefined);
