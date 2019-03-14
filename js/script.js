@@ -1,6 +1,33 @@
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
+  // Для работы RequestAnimationFrame
+  var lastTime = 0;
+  var vendors = ['ms', 'moz', 'webkit', 'o'];
+  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
+      window[vendors[x] + 'CancelRequestAnimationFrame'];
+  }
+
+  if (!window.requestAnimationFrame)
+    window.requestAnimationFrame = function (callback, element) {
+      var currTime = new Date().getTime();
+      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      var id = window.setTimeout(function () {
+          callback(currTime + timeToCall);
+        },
+        timeToCall);
+      lastTime = currTime + timeToCall;
+      return id;
+    };
+
+  if (!window.cancelAnimationFrame)
+    window.cancelAnimationFrame = function (id) {
+      clearTimeout(id);
+    };
+
+
   //TABS
 
   let tab = document.querySelectorAll('.info-header-tab'),
@@ -33,12 +60,12 @@ window.addEventListener('DOMContentLoaded', function () {
         }
       }
     }
-  })
+  });
 
 
   //Timer
 
-  let deadLine = '2019-03-14';
+  let deadLine = '2019-03-15';
 
   function formateNum(num) {
     let str = num.toString();
@@ -48,37 +75,66 @@ window.addEventListener('DOMContentLoaded', function () {
   }
 
   function getTimeRemaining(endtime) {
-    let t = (Date.parse(endtime) - Date.parse(new Date()));
+    let t = (Date.parse(endtime + "T00:00:00.000") - Date.parse(new Date()));
     t = t > 0 ? t : 0;
-    let seconds = Math.floor((t/1000) % 60),
-    minutes = Math.floor((t/1000/60) % 60),
-    hours = Math.floor(t/1000/60/60);
+    let seconds = Math.floor((t / 1000) % 60),
+      minutes = Math.floor((t / 1000 / 60) % 60),
+      hours = Math.floor(t / 1000 / 60 / 60);
 
     return {
-      'total' : t,
-      'hours' : hours,
-      'minutes' : minutes,
-      'seconds' : seconds
+      'total': t,
+      'hours': hours,
+      'minutes': minutes,
+      'seconds': seconds
     };
   }
 
-  function setClock(id, endtime){
+  function setClock(id, endtime) {
     let timer = document.getElementById(id),
-    hours = timer.querySelector('.hours'),
-    minutes = timer.querySelector('.minutes'),
-    seconds = timer.querySelector('.seconds'),
-    timeInterval = setInterval(updateClock, 1000);
+      hours = timer.querySelector('.hours'),
+      minutes = timer.querySelector('.minutes'),
+      seconds = timer.querySelector('.seconds'),
+      timeInterval = setInterval(updateClock, 1000);
+
     function updateClock() {
       let t = getTimeRemaining(endtime);
       hours.textContent = formateNum(t.hours);
       minutes.textContent = formateNum(t.minutes);
       seconds.textContent = formateNum(t.seconds);
 
-      if( t.total <= 0) {
+      if (t.total <= 0) {
         clearInterval(timeInterval);
       }
     }
   }
 
   setClock('timer', deadLine);
+
+
+  //ScrollMenu
+
+  let menuItem = document.querySelector('nav ul');
+
+  menuItem.addEventListener('click', function (event) {
+    let target = event.target;
+
+    if (target && target.hasAttribute('href')) {
+      let anchor = target.getAttribute('href');
+      let div = document.getElementById(anchor.substring(1));
+      let scrolled = window.pageYOffset;
+      let divTop = div.offsetTop;
+      stepScrollMenu();
+      function stepScrollMenu() {
+        if (Math.abs(scrolled - divTop) > 10) {
+          setTimeout(function () {
+            scrolled += (divTop - scrolled)/10;
+            window.scrollTo(0, scrolled);
+            requestAnimationFrame(stepScrollMenu);
+          }, 20);
+        } else {
+          clearTimeout();
+        }
+      };
+    }
+  });
 });
