@@ -138,4 +138,37 @@ window.addEventListener('DOMContentLoaded', function () {
       };
     }
   });
+
+
+  // POPUP
+  
+  let more = document.querySelector('.more'),
+  moreAboutUs = document.querySelectorAll('.description-btn'),
+
+  overlay = document.querySelector('.overlay'),
+  close = document.querySelector('.popup-close');
+
+  function moreBtn() {
+    overlay.style.display = "block";
+    this.classList.add("more-splash");
+    this.classList.add("btn-this");
+    document.body.style.overflow = 'hidden';
+  };
+  // function removeMoreSplashClass(){
+  //   this.classList.remove("more-splash");
+  // }
+  close.addEventListener('click', function(){
+    overlay.style.display = "none";
+    let btn = document.querySelector('.btn-this');
+    console.log(btn);
+    btn.classList.remove("more-splash");
+    btn.classList.remove("btn-this");
+    document.body.style.overflow = '';
+  });
+
+  more.addEventListener('click', moreBtn.bind(more));
+  moreAboutUs.forEach(function(item){
+    item.addEventListener('click', moreBtn.bind(item));
+  });
+  
 });
