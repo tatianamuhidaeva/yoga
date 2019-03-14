@@ -2,9 +2,9 @@ window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   // Для работы RequestAnimationFrame
-  var lastTime = 0;
-  var vendors = ['ms', 'moz', 'webkit', 'o'];
-  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+  let lastTime = 0;
+  let vendors = ['ms', 'moz', 'webkit', 'o'];
+  for (let x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
     window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
       window[vendors[x] + 'CancelRequestAnimationFrame'];
@@ -12,9 +12,9 @@ window.addEventListener('DOMContentLoaded', function () {
 
   if (!window.requestAnimationFrame)
     window.requestAnimationFrame = function (callback, element) {
-      var currTime = new Date().getTime();
-      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      var id = window.setTimeout(function () {
+      let currTime = new Date().getTime();
+      let timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      let id = window.setTimeout(function () {
           callback(currTime + timeToCall);
         },
         timeToCall);
@@ -113,21 +113,22 @@ window.addEventListener('DOMContentLoaded', function () {
 
   //ScrollMenu
 
-  let menuItem = document.querySelector('nav ul');
-
+  let menuItem = document.querySelector('nav ul'),
+    menuHeight = menuItem.clientHeight;
   menuItem.addEventListener('click', function (event) {
     let target = event.target;
 
     if (target && target.hasAttribute('href')) {
-      let anchor = target.getAttribute('href');
-      let div = document.getElementById(anchor.substring(1));
-      let scrolled = window.pageYOffset;
-      let divTop = div.offsetTop;
+      let anchor = target.getAttribute('href'),
+        div = document.getElementById(anchor.substring(1)),
+        scrolled = window.pageYOffset,
+        divTop = div.offsetTop - menuHeight;
       stepScrollMenu();
+
       function stepScrollMenu() {
         if (Math.abs(scrolled - divTop) > 10) {
           setTimeout(function () {
-            scrolled += (divTop - scrolled)/10;
+            scrolled += (divTop - scrolled) / 10;
             window.scrollTo(0, scrolled);
             requestAnimationFrame(stepScrollMenu);
           }, 20);
