@@ -50,7 +50,6 @@ window.addEventListener('DOMContentLoaded', function () {
 
   info.addEventListener('click', function (event) {
     let target = event.target;
-    console.log(event);
     if (target && target.classList.contains('info-header-tab')) {
       for (let i = 0; i < tab.length; i++) {
         if (target == tab[i]) {
@@ -141,34 +140,66 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
   // POPUP
-  
-  let more = document.querySelector('.more'),
-  moreAboutUs = document.querySelectorAll('.description-btn'),
 
-  overlay = document.querySelector('.overlay'),
-  close = document.querySelector('.popup-close');
+  let more = document.querySelector('.more'),
+    moreAboutUs = document.querySelectorAll('.description-btn'),
+
+    overlay = document.querySelector('.overlay'),
+    close = document.querySelector('.popup-close');
+
+  function getNumFromPx(str) {
+    return str.substring(0, str.indexOf("px"))
+  }
 
   function moreBtn() {
     overlay.style.display = "block";
     this.classList.add("more-splash");
     this.classList.add("btn-this");
     document.body.style.overflow = 'hidden';
+    //Написать анимацию на скроллах
+    if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+      let popup = document.querySelector('.overlay .popup');
+      let startTop = popup.clientHeight;
+      popup.style.top = -startTop + "px";
+      let currTop = +getNumFromPx(popup.style.top);
+      animatePop();
+
+      function animatePop() {
+        if (currTop.toFixed(0) < 150) {
+          setTimeout(function () {
+            currTop += (150 - currTop) / 7;
+            popup.style.top = currTop + "px";
+            requestAnimationFrame(animatePop);
+          }, 20);
+        } else {
+          clearTimeout();
+        }
+      };
+    }
   };
   // function removeMoreSplashClass(){
   //   this.classList.remove("more-splash");
   // }
-  close.addEventListener('click', function(){
+  close.addEventListener('click', function () {
     overlay.style.display = "none";
     let btn = document.querySelector('.btn-this');
-    console.log(btn);
     btn.classList.remove("more-splash");
     btn.classList.remove("btn-this");
     document.body.style.overflow = '';
   });
 
   more.addEventListener('click', moreBtn.bind(more));
-  moreAboutUs.forEach(function(item){
+  moreAboutUs.forEach(function (item) {
     item.addEventListener('click', moreBtn.bind(item));
   });
-  
+
+
+  //animation Fade
+
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent) ||
+    !((navigator.userAgent.indexOf("Edge") > -1) || (navigator.userAgent.indexOf("MSIE") > -1))) {
+    overlay.classList.remove('fade');
+  }
+
+
 });
