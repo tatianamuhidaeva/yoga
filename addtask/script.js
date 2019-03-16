@@ -22,11 +22,12 @@ window.addEventListener('DOMContentLoaded', function () {
     // autoInsert(mask, 0);
     tel.addEventListener('keypress', function (e) {
       let place = tel.value.length;
+      autoInsert(mask, place);
+      place = tel.value.length;
       if ((e.key != mask[place] && mask[place] != XCHAR) ||
         (mask[place] == XCHAR && e.key.match(/\D/))) {
         e.preventDefault();
       }
-      autoInsert(mask, place);
     });
   }
 
