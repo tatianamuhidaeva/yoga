@@ -35,32 +35,32 @@ window.addEventListener('DOMContentLoaded', function () {
       let tels = document.querySelectorAll(selector);
       tels.forEach(tel => {
          function autoInsert(mask, pos) {
-         for (let i = pos; i < mask.length; i++) {
-            if (mask[i] != XCHAR) {
-               tel.value += mask[i];
-            } else {
-               break;
+            for (let i = pos; i < mask.length; i++) {
+               if (mask[i] != XCHAR) {
+                  tel.value += mask[i];
+               } else {
+                  break;
+               }
             }
          }
-         }
-   
+
          if (placeholder) {
-         tel.setAttribute('placeholder', mask.replace(new RegExp(XCHAR, 'g'), '_'));
+            tel.setAttribute('placeholder', mask.replace(new RegExp(XCHAR, 'g'), '_'));
          }
-         
+
          tel.addEventListener('keypress', function (e) {
-         let place = tel.value.length;
-         autoInsert(mask, place);
-         place = tel.value.length;
-         if ((e.key != mask[place] && mask[place] != XCHAR) ||
-            (mask[place] == XCHAR && e.key.match(/\D/))) {
-            e.preventDefault();
-         }
+            let place = tel.value.length;
+            autoInsert(mask, place);
+            place = tel.value.length;
+            if ((e.key != mask[place] && mask[place] != XCHAR) ||
+               (mask[place] == XCHAR && e.key.match(/\D/))) {
+               e.preventDefault();
+            }
          });
       });
-    }
-  
-    maskTel('input[type="tel"]', '+7 (xxx) xxx xx xx', true);
+   }
+
+   maskTel('input[type="tel"]', '+7 (xxx) xxx xx xx', true);
 
    //TABS
 
@@ -250,56 +250,74 @@ window.addEventListener('DOMContentLoaded', function () {
 
    statusMessage.classList.add('status');
 
-   function sendForm(event) {
-      let input = form.getElementsByTagName('input');
-      // let message = {
-      //    loading: 'Загрузка ...',
-      //    success: 'Спасибо! Скоро мы с вами свяжемся!',
-      //    failure: 'Что-то пошло не так...'
-      // };
-      let message = {
-         loading: '<img src="img/loading.png">Загрузка ...',
-         success: '<img src="img/send.png">Спасибо! Скоро мы с вами свяжемся!',
-         failure: '<img src="img/warning.png">Что-то пошло не так...'
-      };
-      form = event.currentTarget;
+   function sendForm(form) {
+      form.addEventListener('submit', function (event) {
+         let input = form.getElementsByTagName('input');
+         // let message = {
+         //    loading: 'Загрузка ...',
+         //    success: 'Спасибо! Скоро мы с вами свяжемся!',
+         //    failure: 'Что-то пошло не так...'
+         // };
+         let message = {
+            loading: '<img src="img/loading.png">Загрузка ...',
+            success: '<img src="img/send.png">Спасибо! Скоро мы с вами свяжемся!',
+            failure: '<img src="img/warning.png">Что-то пошло не так...'
+         };
+         // form = event.currentTarget;
 
-      event.preventDefault();
-      form.appendChild(statusMessage);
+         event.preventDefault();
+         form.appendChild(statusMessage);
 
-      let request = new XMLHttpRequest();
-      request.open('POST', 'server.php');
-      // request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-      request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+         let formData = new FormData(form);
 
-      let formData = new FormData(form);
+         let obj = {};
+         formData.forEach(function (value, key) {
+            obj[key] = value;
+         });
+         let json = JSON.stringify(obj);
 
-      let obj = {};
-      formData.forEach(function (value, key) {
-         obj[key] = value;
-      });
-      let json = JSON.stringify(obj);
+         function postData(data) {
+            let promise = new Promise(function (resolve, reject) {
 
-      request.send(json);
+               let request = new XMLHttpRequest();
+               request.open('POST', 'server.php');
+               // request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+               request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 
-      request.addEventListener('readystatechange', function () {
-         if (request.readyState < 4) {
-            statusMessage.innerHTML = message.loading;
-         } else if (request.readyState == 4 && request.status == 200) {
-            statusMessage.innerHTML = message.success;
-         } else {
-            statusMessage.innerHTML = message.failure;
+               request.send(data);
+
+               request.addEventListener('readystatechange', function () {
+                  if (request.readyState < 4) {
+                     statusMessage.innerHTML = message.loading;
+                  } else if (request.readyState == 4 && request.status == 200) {
+                     statusMessage.innerHTML = message.success;
+                  } else {
+                     statusMessage.innerHTML = message.failure;
+                  }
+               });
+            })
+            return promise;
+         }//end postData()
+
+         function clearInput() {
+            for (let i = 0; i < input.length; i++) {
+               input[i].value = "";
+            }
          }
-      });
 
-      for (let i = 0; i < input.length; i++) {
-         input[i].value = "";
-
-      }
+         postData(json)
+            .then(() => statusMessage.innerHTML = message.loading)
+            .then(() => {
+               statusMessage.innerHTML = message.success;
+            })
+            .then(null, () => statusMessage.innerHTML = message.failure)
+            .then(clearInput);
+      });//end form.addEventListener
    }
+
    let form = document.querySelector('.main-form');
    let formContacts = document.getElementById('form');
-   form.addEventListener('submit', sendForm);
-   formContacts.addEventListener('submit', sendForm);
 
+   sendForm(form);
+   sendForm(formContacts);
 });
