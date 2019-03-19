@@ -252,10 +252,15 @@ window.addEventListener('DOMContentLoaded', function () {
 
    function sendForm(event) {
       let input = form.getElementsByTagName('input');
+      // let message = {
+      //    loading: 'Загрузка ...',
+      //    success: 'Спасибо! Скоро мы с вами свяжемся!',
+      //    failure: 'Что-то пошло не так...'
+      // };
       let message = {
-         loading: 'Загрузка ...',
-         success: 'Спасибо! Скоро мы с вами свяжемся!',
-         failure: 'Что-то пошло не так...'
+         loading: '<img src="img/loading.png">Загрузка ...',
+         success: '<img src="img/send.png">Спасибо! Скоро мы с вами свяжемся!',
+         failure: '<img src="img/warning.png">Что-то пошло не так...'
       };
       form = event.currentTarget;
 
