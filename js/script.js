@@ -288,11 +288,11 @@ window.addEventListener('DOMContentLoaded', function () {
 
                request.addEventListener('readystatechange', function () {
                   if (request.readyState < 4) {
-                     statusMessage.innerHTML = message.loading;
+                     resolve();
                   } else if (request.readyState == 4 && request.status == 200) {
-                     statusMessage.innerHTML = message.success;
+                     resolve();
                   } else {
-                     statusMessage.innerHTML = message.failure;
+                     reject();
                   }
                });
             })
