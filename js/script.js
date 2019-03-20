@@ -253,11 +253,6 @@ window.addEventListener('DOMContentLoaded', function () {
    function sendForm(form) {
       form.addEventListener('submit', function (event) {
          let input = form.getElementsByTagName('input');
-         // let message = {
-         //    loading: 'Загрузка ...',
-         //    success: 'Спасибо! Скоро мы с вами свяжемся!',
-         //    failure: 'Что-то пошло не так...'
-         // };
          let message = {
             loading: '<img src="img/loading.png">Загрузка ...',
             success: '<img src="img/send.png">Спасибо! Скоро мы с вами свяжемся!',
@@ -276,28 +271,51 @@ window.addEventListener('DOMContentLoaded', function () {
          });
          let json = JSON.stringify(obj);
 
-         function postData(data) {
-            let promise = new Promise(function (resolve, reject) {
 
-               let request = new XMLHttpRequest();
-               request.open('POST', 'server.php');
-               // request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-               request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 
-               request.send(data);
+         let request = new XMLHttpRequest();
+         request.open('POST', 'server.php');
+         // request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+         request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
 
-               request.addEventListener('readystatechange', function () {
-                  if (request.readyState < 4) {
-                     resolve();
-                  } else if (request.readyState == 4 && request.status == 200) {
-                     resolve();
-                  } else {
-                     reject();
-                  }
-               });
-            })
-            return promise;
-         }//end postData()
+         request.send(json);
+
+         request.addEventListener('readystatechange', function () {
+               function postData() {
+                  let promise = new Promise(function (resolve, reject) {
+                     console.log("Выполняется лисенер...");
+                     if (request.readyState < 4) {
+                        console.log("request.readyState " + request.readyState);
+                        // console.log(resolve());
+                        console.log(message.loading);
+                        resolve(message.loading);
+                     } else if (request.readyState == 4 && request.status == 200) {
+                        console.log("request.readyState " + request.readyState);
+                        // console.log(resolve());
+                        console.log(message.success);
+                        resolve(message.success);
+                     } else {
+                        console.log("request.readyState" + request.readyState);
+                        console.log(reject());
+                        reject();
+                     }
+                  });
+                  return promise;
+               }//end postData()
+
+               postData()
+               .then((mark) => {
+                  console.log(mark);
+                  statusMessage.innerHTML = mark;
+               })
+               .catch(() => {
+                  console.log("then error");
+                  statusMessage.innerHTML = message.failure
+               })
+               .then(clearInput);
+            });
+
+         
 
          function clearInput() {
             for (let i = 0; i < input.length; i++) {
@@ -305,14 +323,7 @@ window.addEventListener('DOMContentLoaded', function () {
             }
          }
 
-         postData(json)
-            .then(() => statusMessage.innerHTML = message.loading)
-            .then(() => {
-               statusMessage.innerHTML = message.success;
-            })
-            .then(null, () => statusMessage.innerHTML = message.failure)
-            .then(clearInput);
-      });//end form.addEventListener
+      }); //end form.addEventListener
    }
 
    let form = document.querySelector('.main-form');
