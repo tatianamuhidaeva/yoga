@@ -393,22 +393,19 @@ window.addEventListener('DOMContentLoaded', function () {
       total = 0;
 
    totalValue.textContent = total;
-
-   persons.addEventListener('keypress', function (event) {
+   function check(event, elem){
       if(event.key.match(/\D/)){
          event.preventDefault();
       }
-      if(this.value == "" && event.key == 0){
+      if(elem.value == "" && event.key == 0){
          event.preventDefault();
       } 
+   }
+   persons.addEventListener('keypress', function (event) {
+      check(event, this);
    });
    restDays.addEventListener('keypress', function (event) {
-      if(event.key.match(/\D/)){
-         event.preventDefault();
-      }
-      if(this.value == "" && event.key == 0){
-         event.preventDefault();
-      } 
+      check(event, this);
    });
    persons.addEventListener('change', function () {
       personSum = +this.value;
