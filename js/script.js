@@ -281,29 +281,29 @@ window.addEventListener('DOMContentLoaded', function () {
          request.send(json);
 
          request.addEventListener('readystatechange', function () {
-               function postData() {
-                  let promise = new Promise(function (resolve, reject) {
-                     console.log("Выполняется лисенер...");
-                     if (request.readyState < 4) {
-                        console.log("request.readyState " + request.readyState);
-                        // console.log(resolve());
-                        console.log(message.loading);
-                        resolve(message.loading);
-                     } else if (request.readyState == 4 && request.status == 200) {
-                        console.log("request.readyState " + request.readyState);
-                        // console.log(resolve());
-                        console.log(message.success);
-                        resolve(message.success);
-                     } else {
-                        console.log("request.readyState" + request.readyState);
-                        console.log(reject());
-                        reject();
-                     }
-                  });
-                  return promise;
-               }//end postData()
+            function postData() {
+               let promise = new Promise(function (resolve, reject) {
+                  console.log("Выполняется лисенер...");
+                  if (request.readyState < 4) {
+                     console.log("request.readyState " + request.readyState);
+                     // console.log(resolve());
+                     console.log(message.loading);
+                     resolve(message.loading);
+                  } else if (request.readyState == 4 && request.status == 200) {
+                     console.log("request.readyState " + request.readyState);
+                     // console.log(resolve());
+                     console.log(message.success);
+                     resolve(message.success);
+                  } else {
+                     console.log("request.readyState" + request.readyState);
+                     console.log(reject());
+                     reject();
+                  }
+               });
+               return promise;
+            } //end postData()
 
-               postData()
+            postData()
                .then((mark) => {
                   console.log(mark);
                   statusMessage.innerHTML = mark;
@@ -313,9 +313,9 @@ window.addEventListener('DOMContentLoaded', function () {
                   statusMessage.innerHTML = message.failure
                })
                .then(clearInput);
-            });
+         });
 
-         
+
 
          function clearInput() {
             for (let i = 0; i < input.length; i++) {
@@ -331,4 +331,115 @@ window.addEventListener('DOMContentLoaded', function () {
 
    sendForm(form);
    sendForm(formContacts);
+
+
+   //SLIDER
+   let slideIndex = 1,
+      slides = document.querySelectorAll('.slider-item'),
+      prev = document.querySelector('.prev'),
+      next = document.querySelector('.next'),
+      dotWrap = document.querySelector('.slider-dots'),
+      dots = document.querySelectorAll('.dot');
+
+   showSlides(slideIndex);
+
+   function showSlides(n) {
+      if (n > slides.length) {
+         slideIndex = 1;
+      }
+      if (n < 1) {
+         slideIndex = slides.length;
+      }
+
+      slides.forEach((item) => item.style.display = 'none');
+      dots.forEach((item) => item.classList.remove('dot-active'));
+
+      slides[slideIndex - 1].style.display = 'block';
+      dots[slideIndex - 1].classList.add('dot-active');
+   }
+
+   function plusSlides(n) {
+      showSlides(slideIndex += n);
+   }
+
+   function currentSlide(n) {
+      showSlides(slideIndex = n);
+   }
+
+   prev.addEventListener('click', function () {
+      plusSlides(-1);
+   });
+
+   next.addEventListener('click', function () {
+      plusSlides(1);
+   });
+
+   dotWrap.addEventListener('click', function (event) {
+      for (let i = 0; i < dots.length + 1; i++) {
+         if (event.target.classList.contains('dot') && event.target == dots[i - 1]) {
+            currentSlide(i);
+         }
+      }
+   });
+
+   //Calc
+   let persons = document.querySelectorAll('.counter-block-input')[0],
+      restDays = document.querySelectorAll('.counter-block-input')[1],
+      place = document.getElementById('select'),
+      totalValue = document.getElementById('total'),
+      placeIndex = 1,
+      personSum = 0,
+      daysSum = 0,
+      total = 0;
+
+   totalValue.textContent = total;
+
+   persons.addEventListener('keypress', function (event) {
+      if(event.key.match(/\D/)){
+         event.preventDefault();
+      }
+      if(this.value == "" && event.key == 0){
+         event.preventDefault();
+      } 
+   });
+   restDays.addEventListener('keypress', function (event) {
+      if(event.key.match(/\D/)){
+         event.preventDefault();
+      }
+      if(this.value == "" && event.key == 0){
+         event.preventDefault();
+      } 
+   });
+   persons.addEventListener('change', function () {
+      personSum = +this.value;
+      total = placeIndex * (daysSum + personSum) * 4000;
+      // console.log(restDays);
+      if (restDays.value == '' || persons.value == '') {
+         totalValue.innerHTML = 0;
+      } else {
+         totalValue.innerHTML = total;
+      }
+
+   });
+   restDays.addEventListener('change', function () {
+      daysSum = +this.value;
+      total = placeIndex * (daysSum + personSum) * 4000;
+      // console.log(restDays);
+      if (restDays.value == '' || persons.value == '') {
+         totalValue.innerHTML = 0;
+      } else {
+         totalValue.innerHTML = total;
+      }
+   });
+
+   place.addEventListener('change', function () {
+      if(restDays.value == '' || persons.value == ''){
+         totalValue.innerHTML = 0;
+      } else {
+         let a = total;
+         placeIndex = this.options[this.selectedIndex].value;
+         totalValue.innerHTML = a* this.options[this.selectedIndex].value;
+      }
+   });
+
 });
