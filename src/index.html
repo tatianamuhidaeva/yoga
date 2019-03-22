@@ -230,6 +230,22 @@
 					</div>
 	 		</div>
 	</div>
-	<script src="../dist/bundle.js"></script>
+
+		<div id="mocha">
+
+		</div>
+	<link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" />
+	<script src="https://unpkg.com/chai/chai.js"></script>
+	<script src="https://unpkg.com/mocha/mocha.js"></script>
+	<script>
+		mocha.setup('bdd');
+		let assert = chai.assert;
+	</script>
+	<!-- <script src="../dist/bundle.js"></script> -->
+	<script src="js/main.js"></script>
+	<script src="js/test.js"></script>
+	<script>
+		mocha.run();
+	</script>
 </body>
 </html>
