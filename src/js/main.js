@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', function () {
+// window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   // Для работы RequestAnimationFrame
@@ -135,7 +135,7 @@ window.addEventListener('DOMContentLoaded', function () {
            clearInterval(timeInterval);
         }
      }
-     return '';
+    //  return '';
   }
 
   setClock('timer', deadLine);
@@ -479,4 +479,4 @@ window.addEventListener('DOMContentLoaded', function () {
      }
   });
 
-});
+// });
