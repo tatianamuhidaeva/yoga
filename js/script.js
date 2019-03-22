@@ -335,14 +335,29 @@ window.addEventListener('DOMContentLoaded', function () {
 
    //SLIDER
    let slideIndex = 1,
+      wrap = document.querySelector('.wrap'),
       slides = document.querySelectorAll('.slider-item'),
       prev = document.querySelector('.prev'),
       next = document.querySelector('.next'),
       dotWrap = document.querySelector('.slider-dots'),
       dots = document.querySelectorAll('.dot');
 
+      // wrap.style.cssText = "display: flex; justify-content: center; align-items: center;";
+
    showSlides(slideIndex);
 
+   function animateCircle(){
+      if (parseInt(getComputedStyle(slides[slideIndex - 1]).borderRadius) > 0) {
+         setTimeout(function () {
+            slides[slideIndex - 1].style.borderRadius = (parseInt(getComputedStyle(slides[slideIndex - 1]).borderRadius) - 1) + "%";
+            slides[slideIndex - 1].style.transform = "scale(" + (parseFloat(/[\.0-9]+/.exec(slides[slideIndex - 1].style.transform)) +0.02) + ")";
+            requestAnimationFrame(animateCircle);
+         }, 5);
+      } else {
+         clearTimeout();
+      }
+
+   }
    function showSlides(n) {
       if (n > slides.length) {
          slideIndex = 1;
@@ -351,11 +366,12 @@ window.addEventListener('DOMContentLoaded', function () {
          slideIndex = slides.length;
       }
 
-      slides.forEach((item) => item.style.display = 'none');
       dots.forEach((item) => item.classList.remove('dot-active'));
-
-      slides[slideIndex - 1].style.display = 'block';
       dots[slideIndex - 1].classList.add('dot-active');
+      slides[slideIndex - 1].style.cssText = "border-radius: 50%; transform: scale(0)";
+      slides.forEach((item) => item.style.display = 'none');
+      slides[slideIndex - 1].style.display = 'block';
+      animateCircle();
    }
 
    function plusSlides(n) {
@@ -390,9 +406,30 @@ window.addEventListener('DOMContentLoaded', function () {
       placeIndex = 1,
       personSum = 0,
       daysSum = 0,
-      total = 0;
+      total = 0,
+      startNum,
+      finishNum,
+      delta;
 
    totalValue.textContent = total;
+   function runNumbers(){
+
+      if (startNum != finishNum) {
+         delta = Math.ceil(Math.abs(finishNum - startNum)/20);
+         setTimeout(function () {
+            if (finishNum - startNum > 0){
+               startNum +=delta;
+               totalValue.innerHTML = startNum;
+            } else {
+               startNum -=delta;
+               totalValue.innerHTML = startNum;
+            }
+            requestAnimationFrame(runNumbers);
+         }, 1);
+      } else {
+         clearTimeout();
+      }
+   }
    function check(event, elem){
       if(event.key.match(/\D/)){
          event.preventDefault();
@@ -407,26 +444,27 @@ window.addEventListener('DOMContentLoaded', function () {
    restDays.addEventListener('keypress', function (event) {
       check(event, this);
    });
-   persons.addEventListener('change', function () {
-      personSum = +this.value;
+
+   function calc(){
       total = placeIndex * (daysSum + personSum) * 4000;
       // console.log(restDays);
       if (restDays.value == '' || persons.value == '') {
-         totalValue.innerHTML = 0;
+         startNum = +totalValue.textContent;
+         finishNum = 0;
+         runNumbers();
       } else {
-         totalValue.innerHTML = total;
+         startNum = +totalValue.textContent;
+         finishNum = +total;
+         runNumbers();
       }
-
+   }
+   persons.addEventListener('change', function () {
+      personSum = +this.value;
+      calc();
    });
    restDays.addEventListener('change', function () {
       daysSum = +this.value;
-      total = placeIndex * (daysSum + personSum) * 4000;
-      // console.log(restDays);
-      if (restDays.value == '' || persons.value == '') {
-         totalValue.innerHTML = 0;
-      } else {
-         totalValue.innerHTML = total;
-      }
+      calc();
    });
 
    place.addEventListener('change', function () {
@@ -435,7 +473,9 @@ window.addEventListener('DOMContentLoaded', function () {
       } else {
          let a = total;
          placeIndex = this.options[this.selectedIndex].value;
-         totalValue.innerHTML = a* this.options[this.selectedIndex].value;
+         startNum = +totalValue.textContent;
+         finishNum = a* this.options[this.selectedIndex].value;
+         runNumbers();
       }
    });
 
