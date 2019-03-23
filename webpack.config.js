@@ -1,16 +1,43 @@
 'use strict';
 
-let path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-
+const path = require('path');
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
-  entry: './src/js/script.js',
+  context: path.resolve(__dirname, 'src'),
+  entry: './index.js',
   output: {
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'public')
   },
+  mode: 'development',
   watch: true,
+  devtool: "source-map",
 
-  devtool: "source-map"
-};
+
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: {
+        loader: 'babel-loader',
+        options: {
+          'presets': [
+            [
+              "@babel/preset-env", {
+              targets: {
+                browsers: ['last 2 versions', "ie >= 11"]
+                }
+              }
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}
+// plugins: [
+//   new UglifyJsPlugin()
+// ]
+}
