@@ -317,6 +317,7 @@ header ul li:before {
   margin: 0 auto;
   margin-top: 50px;
   position: relative;
+  overflow: hidden;
 }
 .content .slider .wrap .slider-item img {
   width: 100%;
