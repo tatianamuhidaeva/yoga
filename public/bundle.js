@@ -1545,9 +1545,9 @@ module.exports = g;
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
-  var Promise = __webpack_require__(/*! es6-promise */ "../node_modules/es6-promise/dist/es6-promise.js").Promise;
+  __webpack_require__(/*! es6-promise */ "../node_modules/es6-promise/dist/es6-promise.js").polyfill();
 
-  var FormData = __webpack_require__(/*! formdata-polyfill */ "../node_modules/formdata-polyfill/formdata.min.js");
+  __webpack_require__(/*! formdata-polyfill */ "../node_modules/formdata-polyfill/formdata.min.js");
 
   var requestAnimationFrame = __webpack_require__(/*! ./parts/RequestAnimationFrame.js */ "./parts/RequestAnimationFrame.js"),
       phonemask = __webpack_require__(/*! ./parts/phonemask.js */ "./parts/phonemask.js"),
