@@ -182,21 +182,40 @@ function calc() {
   totalValue.textContent = total;
 
   function runNumbers() {
-    if (startNum != finishNum) {
-      delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
-      setTimeout(function () {
-        if (finishNum - startNum > 0) {
-          startNum += delta;
-          totalValue.innerHTML = startNum;
-        } else {
-          startNum -= delta;
-          totalValue.innerHTML = startNum;
-        }
+    if (!(navigator.userAgent.indexOf("Edge") > -1 || navigator.userAgent.indexOf("MSIE") > -1)) {
+      if (startNum != finishNum) {
+        delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
+        setTimeout(function () {
+          if (finishNum - startNum > 0) {
+            startNum += delta;
+            totalValue.innerHTML = startNum;
+          } else {
+            startNum -= delta;
+            totalValue.innerHTML = startNum;
+          }
 
-        requestAnimationFrame(runNumbers);
-      }, 1);
+          requestAnimationFrame(runNumbers);
+        }, 1);
+      } else {
+        clearTimeout();
+      } // }
+
     } else {
-      clearTimeout();
+      setInterval(function () {
+        if (startNum != finishNum) {
+          delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
+
+          if (finishNum - startNum > 0) {
+            startNum += delta;
+            totalValue.innerHTML = startNum;
+          } else {
+            startNum -= delta;
+            totalValue.innerHTML = startNum;
+          }
+        } else {
+          clearInterval();
+        }
+      }, 1);
     }
   }
 
@@ -224,10 +243,12 @@ function calc() {
       startNum = +totalValue.textContent;
       finishNum = 0;
       runNumbers();
+      totalValue.innerHTML = finishNum;
     } else {
       startNum = +totalValue.textContent;
       finishNum = +total;
       runNumbers();
+      totalValue.innerHTML = finishNum;
     }
   }
 
@@ -249,6 +270,7 @@ function calc() {
       startNum = +totalValue.textContent;
       finishNum = a * placeIndex;
       runNumbers();
+      totalValue.innerHTML = finishNum;
     }
   });
 }
@@ -521,21 +543,8 @@ function slider() {
       prev = document.querySelector('.prev'),
       next = document.querySelector('.next'),
       dotWrap = document.querySelector('.slider-dots'),
-      dots = document.querySelectorAll('.dot'); // wrap.style.cssText = "display: flex; justify-content: center; align-items: center;";
-
+      dots = document.querySelectorAll('.dot');
   showSlides(slideIndex);
-
-  function animateCircle() {
-    if (parseInt(getComputedStyle(slides[slideIndex - 1]).borderRadius) > 0) {
-      setTimeout(function () {
-        slides[slideIndex - 1].style.borderRadius = parseInt(getComputedStyle(slides[slideIndex - 1]).borderRadius) - 1 + "%";
-        slides[slideIndex - 1].style.transform = "scale(" + (parseFloat(/[\.0-9]+/.exec(slides[slideIndex - 1].style.transform)) + 0.02) + ")";
-        requestAnimationFrame(animateCircle);
-      }, 5);
-    } else {
-      clearTimeout();
-    }
-  }
 
   function showSlides(n) {
     if (n > slides.length) {
@@ -550,12 +559,10 @@ function slider() {
       return item.classList.remove('dot-active');
     });
     dots[slideIndex - 1].classList.add('dot-active');
-    slides[slideIndex - 1].style.cssText = "border-radius: 50%; transform: scale(0)";
     slides.forEach(function (item) {
       return item.style.display = 'none';
     });
     slides[slideIndex - 1].style.display = 'block';
-    animateCircle();
   }
 
   function plusSlides(n) {
@@ -640,7 +647,7 @@ module.exports = tabs;
 
 //Timer
 function timer() {
-  var deadLine = '2019-03-24';
+  var deadLine = '2019-03-27';
 
   var formateNum = function formateNum(num) {
     return num.toString().length < 2 ? "0" + num.toString() : num.toString();

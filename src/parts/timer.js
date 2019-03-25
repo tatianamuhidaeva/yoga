@@ -1,6 +1,6 @@
 //Timer
 function timer() {
-   let deadLine = '2019-03-24';
+   let deadLine = '2019-03-27';
 
    let formateNum = num =>
       (num.toString().length < 2) ?
