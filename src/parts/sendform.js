@@ -8,7 +8,7 @@
       
    statusMessage.classList.add('status');
 
-   function sendForm(form) {
+   function sendFormListener(form) {
       form.addEventListener('submit', function (event) {
          let input = form.getElementsByTagName('input');
          let message = {
@@ -72,8 +72,8 @@
    }
 
 
-   sendForm(form);
-   sendForm(formContacts);
+   sendFormListener(form);
+   sendFormListener(formContacts);
 
    }
    module.exports = sendForm;
