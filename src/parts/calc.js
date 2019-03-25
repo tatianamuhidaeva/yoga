@@ -70,11 +70,12 @@ function calc(){
    place.addEventListener('change', function () {
       if(restDays.value == '' || persons.value == ''){
          totalValue.innerHTML = 0;
+         placeIndex = this.options[this.selectedIndex].value;
       } else {
          let a = total;
          placeIndex = this.options[this.selectedIndex].value;
          startNum = +totalValue.textContent;
-         finishNum = a* this.options[this.selectedIndex].value;
+         finishNum = a * placeIndex;
          runNumbers();
       }
    }); 

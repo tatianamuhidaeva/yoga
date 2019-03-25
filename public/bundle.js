@@ -242,11 +242,12 @@ function calc() {
   place.addEventListener('change', function () {
     if (restDays.value == '' || persons.value == '') {
       totalValue.innerHTML = 0;
+      placeIndex = this.options[this.selectedIndex].value;
     } else {
       var a = total;
       placeIndex = this.options[this.selectedIndex].value;
       startNum = +totalValue.textContent;
-      finishNum = a * this.options[this.selectedIndex].value;
+      finishNum = a * placeIndex;
       runNumbers();
     }
   });
@@ -446,7 +447,7 @@ function sendForm() {
       statusMessage = document.createElement('div');
   statusMessage.classList.add('status');
 
-  function sendForm(form) {
+  function sendFormListener(form) {
     form.addEventListener('submit', function (event) {
       var input = form.getElementsByTagName('input');
       var message = {
@@ -497,8 +498,8 @@ function sendForm() {
     }); //end form.addEventListener
   }
 
-  sendForm(form);
-  sendForm(formContacts);
+  sendFormListener(form);
+  sendFormListener(formContacts);
 }
 
 module.exports = sendForm;

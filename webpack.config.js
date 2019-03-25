@@ -37,7 +37,4 @@ module: {
     }
   ]
 }
-// plugins: [
-//   new UglifyJsPlugin()
-// ]
 }
