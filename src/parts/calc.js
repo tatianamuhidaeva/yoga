@@ -13,12 +13,12 @@ function calc() {
       delta;
 
    totalValue.textContent = total;
-
+let animateRunNum;
    function runNumbers() {
-      if (!(navigator.userAgent.indexOf("Edge") > -1 || navigator.userAgent.indexOf("MSIE") > -1)) {
+      // if (!(navigator.userAgent.indexOf("Edge") > -1 || navigator.userAgent.indexOf("MSIE") > -1)) {
          if (startNum != finishNum) {
             delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
-            setTimeout(function () {
+            animateRunNum = setTimeout(function () {
                if (finishNum - startNum > 0) {
                   startNum += delta;
                   totalValue.innerHTML = startNum;
@@ -29,25 +29,25 @@ function calc() {
                requestAnimationFrame(runNumbers);
             }, 1);
          } else {
-            clearTimeout();
+            clearTimeout(animateRunNum);
          }
          // }
-      } else {
-         setInterval(function () {
-            if (startNum != finishNum) {
-               delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
-               if (finishNum - startNum > 0) {
-                  startNum += delta;
-                  totalValue.innerHTML = startNum;
-               } else {
-                  startNum -= delta;
-                  totalValue.innerHTML = startNum;
-               }
-            } else {
-               clearInterval();
-            }
-         }, 1);
-      }
+      // } else {
+      //    setInterval(function () {
+      //       if (startNum != finishNum) {
+      //          delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
+      //          if (finishNum - startNum > 0) {
+      //             startNum += delta;
+      //             totalValue.innerHTML = startNum;
+      //          } else {
+      //             startNum -= delta;
+      //             totalValue.innerHTML = startNum;
+      //          }
+      //       } else {
+      //          clearInterval();
+      //       }
+      //    }, 1);
+      // }
    }
 
 

@@ -1545,9 +1545,9 @@ module.exports = g;
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
-  var Promise = __webpack_require__(/*! es6-promise */ "../node_modules/es6-promise/dist/es6-promise.js").Promise;
+  __webpack_require__(/*! es6-promise */ "../node_modules/es6-promise/dist/es6-promise.js").polyfill();
 
-  var FormData = __webpack_require__(/*! formdata-polyfill */ "../node_modules/formdata-polyfill/formdata.min.js");
+  __webpack_require__(/*! formdata-polyfill */ "../node_modules/formdata-polyfill/formdata.min.js");
 
   var requestAnimationFrame = __webpack_require__(/*! ./parts/RequestAnimationFrame.js */ "./parts/RequestAnimationFrame.js"),
       phonemask = __webpack_require__(/*! ./parts/phonemask.js */ "./parts/phonemask.js"),
@@ -1633,43 +1633,43 @@ function calc() {
       finishNum,
       delta;
   totalValue.textContent = total;
+  var animateRunNum;
 
   function runNumbers() {
-    if (!(navigator.userAgent.indexOf("Edge") > -1 || navigator.userAgent.indexOf("MSIE") > -1)) {
-      if (startNum != finishNum) {
-        delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
-        setTimeout(function () {
-          if (finishNum - startNum > 0) {
-            startNum += delta;
-            totalValue.innerHTML = startNum;
-          } else {
-            startNum -= delta;
-            totalValue.innerHTML = startNum;
-          }
-
-          requestAnimationFrame(runNumbers);
-        }, 1);
-      } else {
-        clearTimeout();
-      } // }
-
-    } else {
-      setInterval(function () {
-        if (startNum != finishNum) {
-          delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
-
-          if (finishNum - startNum > 0) {
-            startNum += delta;
-            totalValue.innerHTML = startNum;
-          } else {
-            startNum -= delta;
-            totalValue.innerHTML = startNum;
-          }
+    // if (!(navigator.userAgent.indexOf("Edge") > -1 || navigator.userAgent.indexOf("MSIE") > -1)) {
+    if (startNum != finishNum) {
+      delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
+      animateRunNum = setTimeout(function () {
+        if (finishNum - startNum > 0) {
+          startNum += delta;
+          totalValue.innerHTML = startNum;
         } else {
-          clearInterval();
+          startNum -= delta;
+          totalValue.innerHTML = startNum;
         }
+
+        requestAnimationFrame(runNumbers);
       }, 1);
-    }
+    } else {
+      clearTimeout(animateRunNum);
+    } // }
+    // } else {
+    //    setInterval(function () {
+    //       if (startNum != finishNum) {
+    //          delta = Math.ceil(Math.abs(finishNum - startNum) / 20);
+    //          if (finishNum - startNum > 0) {
+    //             startNum += delta;
+    //             totalValue.innerHTML = startNum;
+    //          } else {
+    //             startNum -= delta;
+    //             totalValue.innerHTML = startNum;
+    //          }
+    //       } else {
+    //          clearInterval();
+    //       }
+    //    }, 1);
+    // }
+
   }
 
   function check(event, elem) {
@@ -1799,26 +1799,30 @@ function popup() {
     return str.substring(0, str.indexOf("px"));
   };
 
+  var animatePopFallTimer;
+
   function animatePopFall() {
     if (currTop.toFixed(0) < 150) {
-      setTimeout(function () {
+      animatePopFallTimer = setTimeout(function () {
         currTop += (150 - currTop) / 7;
         popup.style.top = currTop + "px";
         requestAnimationFrame(animatePopFall);
       }, 20);
     } else {
-      clearTimeout();
+      clearTimeout(animatePopFallTimer);
     }
   }
 
+  var animatePopCloseTimer;
+
   function animatePopClose() {
     if (popup.style.opacity > 0) {
-      setTimeout(function () {
+      animatePopCloseTimer = setTimeout(function () {
         popup.style.opacity -= 0.05;
         requestAnimationFrame(animatePopClose);
       }, 10);
     } else {
-      clearTimeout();
+      clearTimeout(animatePopCloseTimer);
       overlay.style.display = "none";
     }
   }
@@ -1878,16 +1882,17 @@ function scrollMenu() {
   var menuItem = document.querySelector('nav ul'),
       scrolled,
       divTop;
+  var animateScrollMenu;
 
   function stepScrollMenu() {
     if (Math.abs(scrolled - divTop) > 10) {
-      setTimeout(function () {
+      animateScrollMenu = setTimeout(function () {
         scrolled += (divTop - scrolled) / 10;
         window.scrollTo(0, scrolled);
         requestAnimationFrame(stepScrollMenu);
       }, 20);
     } else {
-      clearTimeout();
+      clearTimeout(animateScrollMenu);
     }
   }
 
