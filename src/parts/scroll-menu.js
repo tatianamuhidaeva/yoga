@@ -4,15 +4,16 @@ function scrollMenu() {
       scrolled,
       divTop;
 
+     let animateScrollMenu; 
    function stepScrollMenu() {
       if (Math.abs(scrolled - divTop) > 10) {
-         setTimeout(function () {
+         animateScrollMenu = setTimeout(function () {
             scrolled += (divTop - scrolled) / 10;
             window.scrollTo(0, scrolled);
             requestAnimationFrame(stepScrollMenu);
          }, 20);
       } else {
-         clearTimeout();
+         clearTimeout(animateScrollMenu);
       }
    }
 

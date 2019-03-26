@@ -11,26 +11,28 @@ function popup(){
 
    let getNumFromPx = str => str.substring(0, str.indexOf("px"));
 
+   let animatePopFallTimer;
    function animatePopFall() {
       if (currTop.toFixed(0) < 150) {
-         setTimeout(function () {
+         animatePopFallTimer = setTimeout(function () {
             currTop += (150 - currTop) / 7;
             popup.style.top = currTop + "px";
             requestAnimationFrame(animatePopFall);
          }, 20);
       } else {
-         clearTimeout();
+         clearTimeout(animatePopFallTimer);
       }
    }
 
+   let animatePopCloseTimer;
    function animatePopClose() {
       if (popup.style.opacity > 0) {
-         setTimeout(function () {
+         animatePopCloseTimer = setTimeout(function () {
             popup.style.opacity -= 0.05;
             requestAnimationFrame(animatePopClose);
          }, 10);
       } else {
-         clearTimeout();
+         clearTimeout(animatePopCloseTimer);
          overlay.style.display = "none";
       }
    }
