@@ -55,7 +55,7 @@
                   statusMessage.innerHTML = mark;
                })
                .catch(() => {
-                  statusMessage.innerHTML = message.failure
+                  statusMessage.innerHTML = message.failure;
                })
                .then(clearInput);
          });
@@ -67,7 +67,6 @@
                input[i].value = "";
             }
          }
-
       }); //end form.addEventListener
    }
 
